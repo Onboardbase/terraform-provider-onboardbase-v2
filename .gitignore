@@ -61,7 +61,9 @@ override.tf.json
 # Ignore CLI configuration files
 .terraformrc
 terraform.rc
-terraform
-examples
+.terraform
+.terraform*
+*.tfstate*
 vendor
 go.*
+onboardbase.yaml
