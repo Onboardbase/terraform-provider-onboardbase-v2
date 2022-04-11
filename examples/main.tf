@@ -8,8 +8,8 @@ terraform {
 }
 
 provider "onboardbase" {
-  apikey = "4GEFHA3U984WF9HVMCRGC"
-  passcode = "UTIBEABASI"
+  apikey = "" // Onboardbase APIkey
+  passcode = "" // Onboardbase passcode
 }
 
 
