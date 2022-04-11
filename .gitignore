@@ -67,3 +67,4 @@ terraform.rc
 vendor
 go.*
 onboardbase.yaml
+node_modules
