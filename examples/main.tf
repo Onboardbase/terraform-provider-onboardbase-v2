@@ -8,24 +8,18 @@ terraform {
 }
 
 provider "onboardbase" {
-  apikey = "" // Onboardbase APIkey
-  passcode = "" // Onboardbase passcode
+  apikey = "" // API key
+  passcode = "" //Passcode
 }
 
 
 data "onboardbase_secret" "test" {
   name = "TEST"
-}
-
-data "onboardbase_secret" "language" {
-  name = "LANGUAGE"
+  project = "test"
+  environment = "development"
 }
 
 # Returns the value of the secret
 output "secret_value" {
   value = data.onboardbase_secret.test.secret
-}
-
-output "language_value" {
-  value = data.onboardbase_secret.language.secret
 }

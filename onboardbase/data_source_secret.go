@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"io/ioutil"
+	"log"
 	"strings"
 
 	"encoding/json"
@@ -20,17 +21,18 @@ import (
 
 func dataSourceSecretRead(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	clientStruct := m.(APIClient)
-
+	project := d.Get("project").(string)
+	environment := d.Get("environment").(string)
 	// Warning or errors can be collected in a slice type
 	var diags diag.Diagnostics
 
 	query := fmt.Sprintf(`query {
-		generalPublicProjects(filterOptions: { title: "test", disableCustomSelect: true }) {
+		generalPublicProjects(filterOptions: { title: "%v", disableCustomSelect: true }) {
 		  list {
 			id
 			title
 			value
-			publicEnvironments(filterOptions: { title: "development" }) {
+			publicEnvironments(filterOptions: { title: "%v" }) {
 			  list {
 				id
 				key
@@ -40,7 +42,7 @@ func dataSourceSecretRead(ctx context.Context, d *schema.ResourceData, m interfa
 		  }
 		}
 	  }
-	`)
+	`, project, environment)
 
 	host := clientStruct.host
 	client := clientStruct.client
@@ -75,8 +77,9 @@ func dataSourceSecretRead(ctx context.Context, d *schema.ResourceData, m interfa
 		return diag.FromErr(err)
 	}
 	if result["errors"] != nil {
-		error := result["errors"].([]interface{})[0].(map[string]interface{})
-		extensions := error["extensions"].(map[string]interface{})
+		query_error := result["errors"].([]interface{})[0].(map[string]interface{})
+		log.Println(query_error)
+		extensions := query_error["extensions"].(map[string]interface{})
 		exceptions := extensions["exception"].(map[string]interface{})
 		return diag.FromErr(errors.New(exceptions["message"].(string)))
 	}
@@ -109,6 +112,14 @@ func dataSourceSecret() *schema.Resource {
 			"secret": &schema.Schema{
 				Type:     schema.TypeString,
 				Computed: true,
+			},
+			"project": &schema.Schema{
+				Type:     schema.TypeString,
+				Required: true,
+			},
+			"environment": &schema.Schema{
+				Type:     schema.TypeString,
+				Required: true,
 			},
 		},
 	}
