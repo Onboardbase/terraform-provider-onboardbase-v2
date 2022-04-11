@@ -50,7 +50,7 @@ func DecryptSecrets(secrets []string, passcode string, secret string, client *ht
 	if err != nil {
 		return "", err
 	}
-	req, err := http.NewRequest("POST", "http://localhost:3000/decode", strings.NewReader(string(body)))
+	req, err := http.NewRequest("POST", "https://w8n9u7hcd9.execute-api.us-east-1.amazonaws.com/decoder", strings.NewReader(string(body)))
 	if err != nil {
 		return "", err
 	}
