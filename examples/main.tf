@@ -1,15 +1,15 @@
 terraform {
   required_providers {
     onboardbase = {
-      version = "0.2"
-      source  = "hashicorp.com/edu/onboardbase"
+      source = "Onboardbase/onboardbase"
+      version = "0.0.6"
     }
   }
 }
 
 provider "onboardbase" {
-  apikey = "" // API key
-  passcode = "" //Passcode
+  apikey = "" // Your onboardbase API key
+  passcode = "" // Your passcode
 }
 
 
