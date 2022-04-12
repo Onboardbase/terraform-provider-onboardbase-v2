@@ -1,19 +1,27 @@
 terraform {
   required_providers {
     onboardbase = {
-      source = "Onboardbase/onboardbase"
-      version = "0.0.6"
+      source = "onboardbase.com/providers/onboardbase"
     }
   }
 }
 
+variable "onboardbase_apikey" {
+  type = string
+  description = "An API key to authenticate with Onboardbase"
+}
+
+variable "onboardbase_passcode" {
+  type = string
+  description = "The passcode for the API key"
+}
 provider "onboardbase" {
-  apikey = "" // Your onboardbase API key
-  passcode = "" // Your passcode
+  apikey = var.onboardbase_apikey // Your onboardbase API key
+  passcode = var.onboardbase_passcode // Your passcode
 }
 
 
-data "onboardbase_secret" "test" {
+data "onboardbase_secret" "example" {
   name = "TEST"
   project = "test"
   environment = "development"
@@ -21,5 +29,5 @@ data "onboardbase_secret" "test" {
 
 # Returns the value of the secret
 output "secret_value" {
-  value = data.onboardbase_secret.test.secret
+  value = nonsensitive(data.onboardbase_secret.example.secret)
 }

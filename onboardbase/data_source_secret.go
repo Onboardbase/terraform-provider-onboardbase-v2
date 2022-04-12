@@ -110,8 +110,9 @@ func dataSourceSecret() *schema.Resource {
 				Required: true,
 			},
 			"secret": &schema.Schema{
-				Type:     schema.TypeString,
-				Computed: true,
+				Type:      schema.TypeString,
+				Computed:  true,
+				Sensitive: true,
 			},
 			"project": &schema.Schema{
 				Type:     schema.TypeString,
