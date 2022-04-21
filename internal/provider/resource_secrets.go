@@ -67,20 +67,17 @@ func resourceScaffolding() *schema.Resource {
 }
 
 func resourceScaffoldingRead(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
-	// use the meta value to retrieve your client from the provider configure method
+	var diags diag.Diagnostics
 
 	project := d.Get("project").(string)
+	keys := d.Get("keys").([]interface{})
 	environment := d.Get("environment").(string)
 
 	diags, encoded, err := fetchData(project, environment, meta)
 	if err != nil {
 		return diag.FromErr(err)
 	}
-
-	d.Set("data", encoded)
-	d.SetId(strconv.FormatInt(time.Now().Unix(), 10))
-
-	return diags
+	return setValues(encoded, keys, diags, d, meta)
 }
 
 func resourceScaffoldingDelete(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
@@ -103,6 +100,10 @@ func resourceScaffoldingCreate(ctx context.Context, d *schema.ResourceData, meta
 	if err != nil {
 		return diag.FromErr(err)
 	}
+	return setValues(encoded, keys, diags, d, meta)
+}
+
+func setValues(encoded string, keys []interface{}, diags diag.Diagnostics, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 
 	d.SetId(strconv.FormatInt(time.Now().Unix(), 10))
 
@@ -123,7 +124,6 @@ func resourceScaffoldingCreate(ctx context.Context, d *schema.ResourceData, meta
 	}
 
 	d.Set("values", secretValues)
-
 	return diags
 }
 
