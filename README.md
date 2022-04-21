@@ -1,91 +1,72 @@
-# Terraform Provider Onboardbase
 
-## Provider Overview
+# Terraform Provider Scaffolding (Terraform Plugin SDK)
 
-The Onboardbase terraform provider allows you to fetch secrets stored on your Onboardbase account and use them in your Tertaform code
+_This template repository is built on the [Terraform Plugin SDK](https://github.com/hashicorp/terraform-plugin-sdk). The template repository built on the [Terraform Plugin Framework](https://github.com/hashicorp/terraform-plugin-framework) can be found at [terraform-provider-scaffolding-framework](https://github.com/hashicorp/terraform-provider-scaffolding-framework). See [Which SDK Should I Use?](https://www.terraform.io/docs/plugin/which-sdk.html) in the Terraform documentation for additional information._
 
-## Prerequisites
+This repository is a *template* for a [Terraform](https://www.terraform.io) provider. It is intended as a starting point for creating Terraform providers, containing:
 
-To follow along with this guide, you need to have the following set up
+ - A resource, and a data source (`internal/provider/`),
+ - Examples (`examples/`) and generated documentation (`docs/`),
+ - Miscellaneous meta files.
+ 
+These files contain boilerplate code that you will need to edit to create your own Terraform provider. Tutorials for creating Terraform providers can be found on the [HashiCorp Learn](https://learn.hashicorp.com/collections/terraform/providers) platform.
 
-- An Onboardbase account with a project and environment created
-- Experience with Terraform
+Please see the [GitHub template repository documentation](https://help.github.com/en/github/creating-cloning-and-archiving-repositories/creating-a-repository-from-a-template) for how to create a new repository from this template on GitHub.
 
-## Fetching secrets with the `onboardbase_secret` data source
+Once you've written your provider, you'll want to [publish it on the Terraform Registry](https://www.terraform.io/docs/registry/providers/publishing.html) so that others can use it.
 
-This examples shows how to fetch a secret stored on onboardbase for use in your Terraform code
 
-In your Terraform block, point terraform to the Onboardbase provider as shown below.
+## Requirements
 
-```hcl
+-	[Terraform](https://www.terraform.io/downloads.html) >= 0.13.x
+-	[Go](https://golang.org/doc/install) >= 1.17
 
-terraform {
-  required_providers {
-    onboardbase = {
-      source = "Onboardbase/onboardbase"
-    }
-  }
-}
+## Building The Provider
 
+1. Clone the repository
+1. Enter the repository directory
+1. Build the provider using the Go `install` command: 
+---
+```sh
+$ go install
 ```
+---
 
-Define variables to store your Onboardbase API key and passcode
+## Adding Dependencies
 
-```hcl
+This provider uses [Go modules](https://github.com/golang/go/wiki/Modules).
+Please see the Go documentation for the most up to date information about using Go modules.
 
-variable "onboardbase_apikey" {
-  type = string
-  description = "An API key to authenticate with Onboardbase"
-}
+To add a new dependency `github.com/author/dependency` to your Terraform provider:
 
-variable "onboardbase_passcode" {
-  type = string
-  description = "The passcode for the API key"
-}
-
+---
 ```
-
-Add an `onboardbase` provider block and pass in the API key and passcode the provider will use to authenticate with your onboardbase account.
-
-```hcl
-
-provider "onboardbase" {
-  apikey = var.onboardbase_apikey // Your onboardbase API key
-  passcode = var.onboardbase_passcode // Your passcode
-}
-
+go get github.com/author/dependency
+go mod tidy
 ```
+---
 
-Next create a data source of type `onboardbase_secret` and pass in the name of the secret you want to access, as well as the project and the environment where the secret is defined.
+Then commit the changes to `go.mod` and `go.sum`.
 
-```hcl
-data "onboardbase_secret" "example" {
-  name = "name"
-  project = "project"
-  environment = "environment"
-}
+## Using the provider
 
+Fill this in for each provider
+
+## Developing the Provider
+
+If you wish to work on the provider, you'll first need [Go](http://www.golang.org) installed on your machine (see [Requirements](#requirements) above).
+
+To compile the provider, run `go install`. This will build the provider and put the provider binary in the `$GOPATH/bin` directory.
+
+To generate or update documentation, run `go generate`.
+
+In order to run the full suite of Acceptance tests, run `make testacc`.
+
+*Note:* Acceptance tests create real resources, and often cost money to run.
+
+---
+```sh
+$ make testacc
 ```
+---
 
-Finally, access the `secret` property of the data source which will be set to the value of the secret you want to access. Note that the provider returns the secret as a sensitive value so we need to explicitly mark it as nonsensitive in order to view it on the command line
-
-```hcl
-output "secret_value" {
-  value = nonsensitive(data.onboardbase_secret.example.secret)
-}
-
-```
-
-Now, Run `terraform init` to find download the latest version of the provider
-
-![terraform init](images/terraform_init.png)
-
-For the purpose of this guide, we will be passing in our variables from the command line
-
-![terraform init](images/terraform_apply1.png)
-
-![terraform init](images/terraform_apply2.png)
-
-![terraform init](images/terraform_apply3.png)
-
-And Voila! You have successfully used the Onboardbase terraform provider to securely pass in secrets from your onboardbase account.
