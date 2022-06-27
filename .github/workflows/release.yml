@@ -22,7 +22,7 @@ jobs:
         uses: actions/checkout@v3
       - name: Fetch secrets
         id: fetch-secrets
-        uses: Onboardbase/onboardbase-action@v0.0.8
+        uses: Onboardbase/onboardbase-action@v6.0.7
         with:
             apikey: ${{secrets.APIKEY}}
             passcode: ${{secrets.PASSCODE}}
